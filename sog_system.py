@@ -43,6 +43,22 @@ if 'last_result' not in st.session_state:
 
 st.markdown("""
     <style>
+        /* ПРИНУДИТЕЛЬНО СВЕТЛАЯ ТЕМА */
+        .stApp {
+            background-color: #ffffff !important;
+        }
+        .main > div {
+            background-color: #ffffff !important;
+        }
+
+        /* УМЕНЬШАЕМ ОТСТУПЫ ХЕДЕРА И ФУТЕРА */
+        .st-emotion-cache-zy6yx3 {
+            width: 100%;
+            padding: 1rem 1rem;
+            max-width: initial;
+            min-width: auto;
+        }
+
         header {visibility: hidden;}
         .stAppHeader {display: none;}
         [data-testid="stToolbar"] {display: none;}
@@ -456,7 +472,6 @@ def main():
     """, unsafe_allow_html=True)
 
     with st.container():
-        st.markdown('<div class="instruction-panel">', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
         with col1:
             st.markdown('<div class="instruction-title">Назначение системы</div>', unsafe_allow_html=True)
@@ -719,6 +734,6 @@ def main():
             </div>
             """, unsafe_allow_html=True)
 
+
 if __name__ == "__main__":
     main()
-
