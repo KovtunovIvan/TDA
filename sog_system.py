@@ -1,6 +1,6 @@
 """
 СОГ ГП-16 - Система поддержки принятия решений для управления ТДА
-Версия 11.0 - С корректированной формулой на основе данных Excel
+Версия 1.0 - С корректированной формулой на основе данных Excel
 """
 
 import streamlit as st
@@ -43,7 +43,7 @@ if 'last_result' not in st.session_state:
 
 st.markdown("""
     <style>
-        /* ПРИНУДИТЕЛЬНО СВЕТЛАЯ ТЕМА */
+        /* ПРИНУДИТЕЛЬНО СВЕТЛАЯ ТЕМА ДЛЯ ВСЕГО ПРИЛОЖЕНИЯ */
         .stApp {
             background-color: #ffffff !important;
         }
@@ -51,12 +51,115 @@ st.markdown("""
             background-color: #ffffff !important;
         }
 
+        /* СВЕТЛАЯ ТЕМА ДЛЯ ВСЕХ ЭЛЕМЕНТОВ ВВОДА */
+        .stNumberInput input, .stTextInput input, .stSelectbox select, .stSelectbox div[data-baseweb="select"] div {
+            background-color: #ffffff !important;
+            color: #1a202c !important;
+            border-color: #cbd5e0 !important;
+        }
+
+        /* Selectbox выпадающий список */
+        div[data-baseweb="select"] ul {
+            background-color: #ffffff !important;
+        }
+        div[data-baseweb="select"] li {
+            background-color: #ffffff !important;
+            color: #1a202c !important;
+        }
+        div[data-baseweb="select"] li:hover {
+            background-color: #edf2f7 !important;
+        }
+
+        /* Метки для полей ввода */
+        .stNumberInput label, .stSelectbox label {
+            color: #4a5568 !important;
+        }
+
         /* УМЕНЬШАЕМ ОТСТУПЫ ХЕДЕРА И ФУТЕРА */
         .st-emotion-cache-zy6yx3 {
             width: 100%;
-            padding: 1rem 1rem;
+            padding: 2rem 1rem;
             max-width: initial;
             min-width: auto;
+        }
+
+        /* АДАПТАЦИЯ ПОД МОБИЛЬНУЮ ВЕРСИЮ */
+        @media (max-width: 768px) {
+            /* Уменьшаем отступы */
+            .main .block-container {
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
+            }
+            
+            /* Уменьшаем размер шрифта в карточках */
+            .metric-value {
+                font-size: 1.2rem !important;
+            }
+            
+            .metric-label {
+                font-size: 0.6rem !important;
+            }
+            
+            /* ВСЕ ТАБЛИЦЫ С ГОРИЗОНТАЛЬНОЙ ПРОКРУТКОЙ */
+            .stExpander table, 
+            .stMarkdown table,
+            .dataframe {
+                display: block !important;
+                overflow-x: auto !important;
+                white-space: nowrap !important;
+                font-size: 0.65rem !important;
+                width: 100% !important;
+            }
+            
+            /* Ячейки таблиц */
+            .stExpander th, .stExpander td,
+            .stMarkdown th, .stMarkdown td,
+            .dataframe th, .dataframe td {
+                padding: 0.3rem 0.5rem !important;
+                font-size: 0.65rem !important;
+            }
+            
+            /* Заголовки таблиц */
+            .stExpander th, 
+            .stMarkdown th,
+            .dataframe th {
+                background-color: #f7fafc !important;
+                font-weight: 600 !important;
+            }
+            
+            /* Уменьшаем заголовки */
+            .header h1 {
+                font-size: 1rem !important;
+            }
+            
+            .header p {
+                font-size: 0.7rem !important;
+            }
+            
+            /* Уменьшаем карточки параметров */
+            .param-label {
+                font-size: 0.65rem !important;
+            }
+            
+            /* Рекомендация на мобильных */
+            .rec-title {
+                font-size: 0.9rem !important;
+            }
+            
+            .rec-reason {
+                font-size: 0.7rem !important;
+            }
+            
+            /* 4 колонки в 2 строки на мобильных */
+            .stColumns {
+                flex-wrap: wrap !important;
+            }
+        }
+
+        /* Общий стиль для контейнера таблиц */
+        .dataframe-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         header {visibility: hidden;}
@@ -669,7 +772,11 @@ def main():
             })
 
         df_comparison = pd.DataFrame(comparison_data)
-        st.markdown(df_comparison.to_html(escape=False, index=False), unsafe_allow_html=True)
+
+        # Оборачиваем таблицу в div с прокруткой для мобильных
+        st.markdown('<div class="dataframe-container">', unsafe_allow_html=True)
+        st.markdown(df_comparison.to_html(escape=False, index=False, classes='dataframe'), unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
         with st.expander("Журнал операций", expanded=False):
             if st.session_state.log:
@@ -703,8 +810,9 @@ def main():
             | Рекомендуемое кол-во ТДА | {res['rec']['recommended']} шт |
 
             **Формула расчета (множественная регрессия по данным СОГ с корректировкой):**
+            
             ```
-            Тгис = 0,053 × Твозд - 0,00048 × Qг - 0,0079 × Nвент - 0,61 × Рвх + 3,8 - 0,15 × Nтдаv
+            Тгис = 0,053 × Твозд - 0,00048 × Qг - 0,0079 × Nвент - 0,61 × Рвх + 3,8 - 0,15 × Nтда
             ```
             
             **Расшифровка коэффициентов:**
@@ -727,7 +835,7 @@ def main():
 
             st.markdown("""
             <div class="footer">
-            СОГ ГП-16 | Система поддержки принятия решений | Версия 11.0<br>
+            СОГ ГП-16 | Система поддержки принятия решений | Версия 1.0<br>
             Расчет основан на регрессионной модели по реальным данным эксплуатации СОГ.<br>
             Формула скорректирована на +1.4°C по результатам верификации на данных 2025-04-13.<br>
             Рекомендации носят справочный характер. Окончательное решение принимает ответственный оператор.
