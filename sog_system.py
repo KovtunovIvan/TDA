@@ -119,7 +119,6 @@ st.markdown("""
             border-radius: 4px;
             border: 1px solid #e2e8f0;
             border-top: 3px solid #3182ce;
-            padding: 0.8rem;
             margin-bottom: 0.5rem;
         }
 
@@ -543,7 +542,7 @@ def main():
     with col6:
         st.markdown('<div class="param-card">', unsafe_allow_html=True)
         st.markdown('<div class="param-label">Текущий месяц</div>', unsafe_allow_html=True)
-        month = int(st.selectbox("month", list(range(1, 13)), index=4, label_visibility="collapsed", key="input_month"))
+        month = int(st.selectbox("month", list(range(1, 13)), index=3, label_visibility="collapsed", key="input_month"))
         st.markdown('<div class="param-unit">месяц</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
     with col7:
